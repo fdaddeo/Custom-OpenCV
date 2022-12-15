@@ -771,7 +771,7 @@ namespace custom_cv
 
     void compute3Dpoints(const cv::Mat & disparity, std::vector<cv::Point3f> & points, std::vector<cv::Point2i> & rc)
     {
-        // Parametri di calibrazione predefiniti
+        // Calibration parameters
         constexpr float focal = 657.475;
         constexpr float baseline = 0.3;
         constexpr float u0 = 509.5;
@@ -789,7 +789,7 @@ namespace custom_cv
                     float y = - (r - v0) * baseline / disparityVal;
                     float z = - baseline * focal / disparityVal;
 
-                    // salvo tutti i punti 3D con z entro i 30m, per semplicita'
+                    // For simplicity, only 3D point close less than 30 cm 
                     if(std::abs(z) < 30)
                     {
                         points.push_back(cv::Point3f(x, y, z));
@@ -800,30 +800,15 @@ namespace custom_cv
         }
     }
 
-    /////////////////////////////////////////////////////////////////////
-    //	 EX. 2
-    //
-    //	 Calcolare con RANSAC il piano che meglio modella i punti forniti
-    //
-    //	 Si tratta di implementare un plane fitting con RANSAC:
-    //
-    //	 1) scelgo a caso 3 punti da points
-    //	 2) calcolo il piano con la funzione fornita
-    //	 3) calcolo la distanza di tutti i punto dal piano, con la funzione fornita
-    //   4) calcolo gli inliers del modello attuale, salvando punti e coordinate immagine corrispondenti
-    //
-    //	 Mi devo salvare il modello che ha piu' inliers
-    //
-    //	 Una volta ottenuto il piano, generare un'immagine dei soli inliers
     void computePlane(const std::vector<cv::Point3f> & points, const std::vector<cv::Point2i> & rc, std::vector<cv::Point3f> & inliers_best_points, std::vector<cv::Point2i> & inliers_best_rc)
     {
-        // Parametri di RANSAC:
-        int N = 10000; // numero di iterazioni
-        float epsilon = 0.2; // errore massimo di un inliers
+        // RANSAC parameters:
+        int N = 10000; // iteration number
+        float epsilon = 0.2; // max error for inliers
 
         int numberPoints = points.size();
 
-        // 20% of outlier probability
+        // 50% of probability of being outlier
         float thresholdInliers = (1 - 0.5) * numberPoints;
 
         std::cout << "RANSAC" << std::endl;
