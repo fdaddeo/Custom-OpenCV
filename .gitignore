@@ -33,3 +33,10 @@
 
 # Build folders
 build/
+
+# Image folder
+images/
+point_cloud/
+
+# PDF files
+*.pdf
