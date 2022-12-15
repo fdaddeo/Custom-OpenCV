@@ -859,4 +859,14 @@ namespace custom_cv
             inliers_best_rc.clear();
         }
     }
+
+    void createImageFromInliers(const cv::Mat & leftSrc, cv::Mat & dst, const std::vector<cv::Point2i> & inliersBestRowColumn)
+    {
+        dst = cv::Mat::zeros(leftSrc.rows, leftSrc.cols, CV_8UC1);
+
+        for (cv::Point2i coordinate : inliersBestRowColumn)
+        {
+            dst.at<uchar>(coordinate.x, coordinate.y) = leftSrc.at<uchar>(coordinate.x, coordinate.y);
+        }
+    }
 }

@@ -381,6 +381,16 @@ namespace custom_cv
      * 
     **/
     void computePlane(const std::vector<cv::Point3f> & points, const std::vector<cv::Point2i> & rc, std::vector<cv::Point3f> & inliers_best_points, std::vector<cv::Point2i> & inliers_best_rc);
+
+    /**
+     * @brief Create a Image from Inlier Points Vector
+     * 
+     * @param leftSrc 
+     * @param dst 
+     * @param inliersBestRowColumn 
+     * 
+    **/
+    void createImageFromInliers(const cv::Mat & leftSrc, cv::Mat & dst, const std::vector<cv::Point2i> & inliersBestRowColumn);
 }
 
 #endif
