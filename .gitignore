@@ -40,3 +40,6 @@ point_cloud/
 
 # PDF files
 *.pdf
+
+# Seminary
+AntaresVision/
