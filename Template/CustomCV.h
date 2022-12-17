@@ -227,6 +227,16 @@ namespace custom_cv
     void bilateralFiltering(const cv::Mat & src, cv::Mat & dst, int d, float sigmaR, float sigmaD);
 
     /**
+     * @brief TODO
+     * 
+     * @param src 
+     * @param dst 
+     * @param alpha 
+     * 
+    **/
+    void sharpeningFiltering(const cv::Mat & src, cv::Mat & dst, const float alpha);
+
+    /**
      * @brief Computes the magnitude and the orientation of the source image by perform two convolution:
      *        the first one with the vertical sobel filter to obtain the magnitude and the second one 
      *        with the horizontal sobel filter to obtian the orientation.

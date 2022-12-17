@@ -435,6 +435,33 @@ namespace custom_cv
         }
     }
 
+    void sharpeningFiltering(const cv::Mat & src, cv::Mat & dst, const float alpha)
+    {
+        cv::Mat LoG_conv_I;
+
+        float kernelData[9] = {0, 1, 0, 1, -4, 1, 0, 1, 0};
+        cv::Mat kernel = cv::Mat(3, 3, CV_32FC1, kernelData);
+        
+        dst = cv::Mat(src.rows, src.cols, src.type(), cv::Scalar(0));
+
+        custom_cv::myfilter2D(src, kernel, LoG_conv_I);
+        LoG_conv_I.convertTo(LoG_conv_I, CV_32FC1);
+        LoG_conv_I *= alpha;
+
+        for (int v = 0; v < dst.rows; ++v)
+        {
+            for (int u = 0; u < dst.cols; ++u)
+            {
+                float pixelVal = (float)(src.at<uchar>(v, u)) - LoG_conv_I.at<float>(v, u);
+
+                pixelVal = std::max(pixelVal, 0.0f);
+                pixelVal = std::min(pixelVal, 255.0f);
+
+                dst.at<uchar>(v, u) = std::round(pixelVal);
+            }
+        }
+    }
+
     void sobel3x3(const cv::Mat & src, cv::Mat & magnitude, cv::Mat & orientation)
     {
         cv::Mat verticalSobel = cv::Mat::zeros(cv::Size(3, 3), CV_32FC1);
