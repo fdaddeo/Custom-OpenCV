@@ -1,6 +1,9 @@
 #ifndef CUSTOM_CV_H
 #define CUSTOM_CV_H
 
+#include <iostream>
+#include <cmath>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -15,6 +18,49 @@
 namespace custom_cv
 {
     /**
+     * @brief Performs a pixel-wise comparison to check if the two images are identical or not.
+     *        Note that the two images have to be of the same type.
+     * 
+     * @tparam T The datatype contained in the two matrixes.
+     * 
+     * @param firstSrc The first input image.
+     * @param secondSrc The secondo input image.
+     * 
+     * @return true if the two images are identical, false otherwise.
+     * 
+    **/
+    template <typename T>
+    bool equalImages(const cv::Mat & firstSrc, const cv::Mat & secondSrc)
+    {
+        if (firstSrc.type() != secondSrc.type())
+        {
+            perror("Error on equalImages function");
+            exit(-1);
+        }
+
+        if (firstSrc.rows != secondSrc.rows || firstSrc.cols != secondSrc.cols)
+        {
+            std::cout << "Dimension reason: ";
+            return false;
+        }
+            
+
+        for (int v = 0; v < firstSrc.rows; ++v)
+        {
+            for (int u = 0; u < firstSrc.cols; ++u)
+            {
+                if (firstSrc.at<T>(v, u) != secondSrc.at<T>(v, u))
+                {
+                    std::cout << "Pixel value reason: ";
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @brief Check if the kernel is an odd kernel.
      * 
      * @param krn Kernel to be checked.
@@ -23,7 +69,7 @@ namespace custom_cv
      * @return false if it is not an odd kernel.
      * 
     **/
-    bool checkOddKernel(const cv::Mat &krn);
+    bool checkOddKernel(const cv::Mat & krn);
 
     /**
      * @brief Add zero padding to the image.
@@ -193,51 +239,51 @@ namespace custom_cv
     void gaussianBlur(const cv::Mat & src, float sigma, int r, cv::Mat & dst, int stride = 1);
 
     /**
-     * @brief Create a Domain Kernel object
+     * @brief Create a Domain Kernel object.
      * 
-     * @param krn 
-     * @param radius 
-     * @param sigma 
+     * @param krn  The "returned" kernel of CV_32FC1 type.
+     * @param radius The radius of the kernel, note that the dimension will be (RADIUS x 2 + 1, RADIUS x 2 + 1).
+     * @param sigma The sigma value.
      * 
     **/
     void createDomainKernel(cv::Mat & krn, const int radius, const int sigma);
 
     /**
-     * @brief Create a Range Kernel object
+     * @brief Create a Range Kernel object, remember that this kernel highly depends on the input image.
      * 
-     * Method implemented.
+     * @param src The source image of CV_8UC1 type.
+     * @param vImage The row index in which center and compute the kernel.
+     * @param uImage the column index in which center and compute the kernel.
+     * @param radius The radius of the kernel, it has to be correctly computed wrt the diameter.
+     * @param diameter The dimension of the kernel.
+     * @param sigma The sigma value.
      * 
-     * TODO the documenatation.
-     * 
-     * @param src 
-     * @param vImage 
-     * @param uImage 
-     * @param radius 
-     * @param diameter 
-     * @param sigma 
-     * @return cv::Mat 
+     * @return The cv::Mat kernel object.
      * 
     **/
     cv::Mat createRangeKernel(const cv::Mat & src, const int vImage, const int uImage, const int radius, const int diameter, const float sigma);
 
     /**
-     * @brief TODO the documentation, method implemented.
+     * @brief TO FIX!
      * 
-     * @param src 
-     * @param dst 
-     * @param d 
-     * @param sigmaR 
-     * @param sigmaD 
+     *        Performs a bilateral filtering performing a convolution with a kernel obtained as composition of 
+     *        the domain kernel and the range kernel.
+     * 
+     * @param src The source image of CV_8UC1 type.
+     * @param dst The "returned" image of CV_32SC1 type.
+     * @param diameter The diameter of the kernel.
+     * @param sigmaR The sigma value for the Range Kernel.
+     * @param sigmaD The sigma value for the Domain Kernel.
      * 
     **/
-    void bilateralFiltering(const cv::Mat & src, cv::Mat & dst, int d, float sigmaR, float sigmaD);
+    void bilateralFiltering(const cv::Mat & src, cv::Mat & dst, int diameter, float sigmaR, float sigmaD);
 
     /**
-     * @brief TODO
+     * @brief Performs a bilateral filtering performing a convolution with a semplified Laplacian Gaussian kernel.
      * 
-     * @param src 
-     * @param dst 
-     * @param alpha 
+     * @param src The source image of CV_8UC1 type.
+     * @param dst The "returned" image of CV_8UC1 type.
+     * @param alpha The alpha value used in the sharpening operation.
      * 
     **/
     void sharpeningFiltering(const cv::Mat & src, cv::Mat & dst, const float alpha);
@@ -323,26 +369,27 @@ namespace custom_cv
     void drawLinesOnImage(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Vec2f> & lines);
 
     /**
-     * @brief TODO documentation, method implemented.
+     * @brief Compute the Disparity matrix using the SAD algorithm. It requires RECTIFIED IMAGES, it uses a window of 7x7 dimension
+     *        and it assumes that the maximum disparity value is 128.
      * 
-     * @param left_image 
-     * @param right_image 
-     * @param dst 
+     * @param leftImage The left source image of CV_8UC1 type.
+     * @param rightImage The right source image of CV_8UC1 type.
+     * @param dst The "returned" disparity matrix of CV_32FC1 type.
      * 
     **/
     void mySAD_Disparity7x7(const cv::Mat & leftImage, const cv::Mat & rightImage, cv::Mat & dst);
 
     /**
-     * @brief TODO documentation, method implemented.
+     * @brief Plots the disparity histogram in a binary image. It assumes 128 as maximum disparity value.
      * 
-     * @param disp 
-     * @param out
+     * @param disparity The source disparity matrix of CV_32FC1 type. 
+     * @param dst The "returned" image of CV_16UC1 type.
      *  
     **/
     void VDisparity(const cv::Mat & disparity, cv::Mat & dst);
 
     /**
-     * @brief TODO
+     * @brief It calculates the plane passing by threee points
      * 
      * Piano passante per tre punti
      * 

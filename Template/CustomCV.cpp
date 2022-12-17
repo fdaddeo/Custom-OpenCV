@@ -1,13 +1,11 @@
 #include "CustomCV.h"
 
-#include <iostream>
-#include <cmath>
-
+// #define RECURSION_FOR_CANNY
 #define EIGEN_FOR_HOMOGRAPHY
 
 namespace custom_cv
 {
-    bool checkOddKernel(const cv::Mat &krn)
+    bool checkOddKernel(const cv::Mat & krn)
     {
         if (krn.cols % 2 != 0 && krn.rows % 2 != 0)
             return true;
@@ -444,7 +442,7 @@ namespace custom_cv
         float kernelData[9] = {0, 1, 0, 1, -4, 1, 0, 1, 0};
         cv::Mat kernel = cv::Mat(3, 3, CV_32FC1, kernelData);
         
-        dst = cv::Mat(src.rows, src.cols, src.type(), cv::Scalar(0));
+        dst = cv::Mat::zeros(src.rows, src.cols, CV_8UC1);
 
         custom_cv::myfilter2D(src, kernel, LoG_conv_I);
         LoG_conv_I.convertTo(LoG_conv_I, CV_32FC1);
@@ -576,9 +574,10 @@ namespace custom_cv
         }
     }
 
+#ifdef RECURSION_FOR_CANNY
     void doubleTh(const cv::Mat & magnitude, cv::Mat & dst, const float tLow, const float tHigh)
     {
-        dst = cv::Mat::zeros(magnitude.rows, magnitude.cols, CV_8UC1);
+        dst = cv::Mat::zeros(magnitude.size(), CV_8UC1);
 
         for (int v = 0; v < magnitude.rows; ++v)
         {
@@ -608,6 +607,70 @@ namespace custom_cv
             }
         }
     }
+#else
+    void doubleTh(const cv::Mat & magnitude, cv::Mat & dst, const float tLow, const float tHigh)
+    {
+        std::vector<cv::Point2i> grownPoints;
+        std::vector<cv::Point2i> markedPoints;
+        
+        dst = cv::Mat::zeros(magnitude.size(), CV_8UC1);
+
+        for (int v = 0; v < dst.rows; ++v)
+        {
+            for (int u = 0; u < dst.cols; ++u)
+            {
+                float magnVal = magnitude.at<float>(v, u);
+
+                if (magnVal >= tHigh)
+                {
+                    dst.at<uchar>(v, u) = 255;
+                    grownPoints.push_back(cv::Point2i(u, v));
+                }
+                else if (magnVal >= tLow && magnVal < tHigh)
+                {
+                    // In order to mark them
+                    dst.at<uchar>(v, u) = 100;
+                    markedPoints.push_back(cv::Point2i(u, v));
+                }
+            }
+        }
+
+        while (!grownPoints.empty())
+        {
+            cv::Point2i point = grownPoints.back();
+            grownPoints.pop_back();
+
+            for (int r = -1; r <= 1; ++r)
+            {
+                for (int c = -1; c <= 1; ++c)
+                {
+                    if ((r == 0 && c == 0))
+                        continue;
+
+                    int v = point.y + r;
+                    int u = point.x + c;
+
+                    if (v < 0 || u < 0 || v >= dst.rows || u >= dst.cols)
+                        continue;
+
+                    if (dst.at<uchar>(v, u) == 100)
+                    {
+                        dst.at<uchar>(v, u) = 255;
+                        grownPoints.push_back(cv::Point2i(u, v));
+                    }
+                }
+            }
+        }
+        
+        for (auto point : markedPoints)
+        {
+            if (dst.at<uchar>(point.y, point.x) != 255)
+            {
+                dst.at<uchar>(point.y, point.x) = 0;
+            }
+        }
+    }
+#endif
 
     bool checkNeighborhoodEdge(const cv::Mat & magnitude, const int vStart, const int uStart, const float tLow, const float tHigh)
     {
@@ -708,7 +771,7 @@ namespace custom_cv
 			pointLast.x = cvRound(x0 - 1000 * (-b));
 			pointLast.y = cvRound(y0 - 1000 * (a));
 
-			cv::line(dst, pointFirst, pointLast, cv::Scalar(0, 0, 255), 1, cv::LINE_AA);
+			cv::line(dst, pointFirst, pointLast, cv::Scalar(255, 0, 0), 1, cv::LINE_AA);
 		}
     }
 
