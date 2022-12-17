@@ -389,48 +389,41 @@ namespace custom_cv
     void VDisparity(const cv::Mat & disparity, cv::Mat & dst);
 
     /**
-     * @brief It calculates the plane passing by threee points
+     * @brief Calculates the plane passing for threee points, with plane equation equal to: ax + by +cz + d = 0. 
      * 
-     * Piano passante per tre punti
-     * 
-     * Equazione del piano usata: ax + by +cz + d = 0
-     * 
-     * DO NOT TOUCH
-     * 
-     * @param p1 
-     * @param p2 
-     * @param p3 
-     * @param a 
-     * @param b 
-     * @param c 
-     * @param d 
+     * @param p1 The first point.
+     * @param p2 The second point.
+     * @param p3 The third point.
+     * @param a The "returned" value A in the equation.
+     * @param b The "returned" value B in the equation.
+     * @param c The "returned" value C in the equation.
+     * @param d The "returned" value D in the equation.
      * 
     **/
     void plane3points(cv::Point3f p1, cv::Point3f p2, cv::Point3f p3, float & a, float & b, float & c ,float & d);
 
     /**
-     * @brief TODO
+     * @brief Calculates the distance between a point and a plane.
      * 
-     * Distanza punto piano.
+     * @param p The point.
+     * @param a The A value in the plane equation.
+     * @param b The B value in the plane equation.
+     * @param c The C value in the plane equation.
+     * @param d The D value in the plane equation.
      * 
-     * DO NOT TOUCH
-     * 
-     * @param p 
-     * @param a 
-     * @param b 
-     * @param c 
-     * @param d 
-     * @return float 
+     * @return The distance between the point and the plane
      * 
     **/
     float distance_plane_point(cv::Point3f p, float a, float b, float c ,float d);
 
     /**
-     * @brief TODO
+     * @brief Calculates the corresponding 3D points from a disparity matrix. Internally it has stored the intrinsec calibration
+     *        parameters of the camera.
      * 
-     * @param disparity 
-     * @param points 
-     * @param rc 
+     * @param disparity The disparity source matrix.
+     * @param points The "returned" vector containing the 3D point computed.
+     * @param rc The "returned" vector containing the indexes for (row, column) of the corresponding 3D points.
+     * 
     **/
     void compute3Dpoints(const cv::Mat & disparity, std::vector<cv::Point3f> & points, std::vector<cv::Point2i> & rc);
 
