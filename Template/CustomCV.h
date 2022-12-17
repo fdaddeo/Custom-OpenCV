@@ -4,7 +4,13 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+
 #include <opencv2/core/fast_math.hpp>
+#include <opencv2/calib3d.hpp>
+#include <opencv2/features2d/features2d.hpp>
+
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Dense>
 
 namespace custom_cv
 {
@@ -403,6 +409,18 @@ namespace custom_cv
      * 
     **/
     void createImageFromInliers(const cv::Mat & leftSrc, cv::Mat & dst, const std::vector<cv::Point2i> & inliersBestRowColumn);
+
+    /**
+     * @brief TODO
+     * 
+     * TODO: change the function name?
+     * 
+     * @param src 
+     * @param dst 
+     * @param corners_src 
+     * 
+    **/
+    void partialImageReprojection(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Point2f> & corners_src);
 }
 
 #endif

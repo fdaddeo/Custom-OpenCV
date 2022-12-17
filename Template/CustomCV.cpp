@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cmath>
 
+#define EIGEN_FOR_HOMOGRAPHY
+
 namespace custom_cv
 {
     bool checkOddKernel(const cv::Mat &krn)
@@ -895,5 +897,59 @@ namespace custom_cv
         {
             dst.at<uchar>(coordinate.x, coordinate.y) = leftSrc.at<uchar>(coordinate.x, coordinate.y);
         }
+    }
+
+    void partialImageReprojection(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Point2f> & corners_src)
+    {
+        std::vector<cv::Point2f> corners_out = {cv::Point2f(0, 0), cv::Point2f(dst.cols - 1, 0), cv::Point2f(dst.cols - 1, dst.rows - 1), cv::Point2f(0, dst.rows - 1)};
+
+        /* nota la posizione dei 4 angoli della copertina in input, questi sono i corrispondenti
+         * nell'immagine di uscita.
+         * E' importante che l'ordine sia rispettato, quindi top-left, top-right, bottom-right, bottom-left
+        */
+        cv::Mat homography = cv::findHomography(corners_out, corners_src);
+
+#ifdef EIGEN_FOR_HOMOGRAPHY
+        Eigen::Matrix<double, 3, 3> homographyEigen;
+        homographyEigen << homography.at<double>(0, 0), homography.at<double>(0, 1), homography.at<double>(0, 2),
+                        homography.at<double>(1, 0), homography.at<double>(1, 1), homography.at<double>(1, 2),
+                        homography.at<double>(2, 0), homography.at<double>(2, 1), homography.at<double>(2, 2);
+
+        for (int v = 0; v < dst.rows; ++v)
+        {
+            for (int u = 0; u < dst.cols; ++u)
+            {            
+                Eigen::Matrix<double, 3, 1> coordinateInDstImageEigen; 
+                coordinateInDstImageEigen << u, v, 1;
+
+                Eigen::Vector3d coordinateInSrcImageEigen = homographyEigen * coordinateInDstImageEigen;
+
+                int vSrcImage = std::round(coordinateInSrcImageEigen(1) / coordinateInSrcImageEigen(2));
+                int uSrcImage = std::round(coordinateInSrcImageEigen(0) / coordinateInSrcImageEigen(2));
+
+                if (vSrcImage >= 0 && vSrcImage < src.rows && uSrcImage >= 0 && uSrcImage < src.cols)
+                {
+                    dst.at<cv::Vec3b>(v, u) = src.at<cv::Vec3b>(vSrcImage, uSrcImage);
+                }
+            }
+        }
+#else
+        for (int v = 0; v < dst.rows; ++v)
+        {
+            for (int u = 0; u < dst.cols; ++u)
+            {
+                cv::Mat coordinateInDstImage = (cv::Mat_<double>(3, 1) << u, v, 1);
+                cv::Mat coordinateInSrcImage = homography * coordinateInDstImage;
+
+                int vSrcImage = std::round(coordinateInSrcImage.at<double>(1, 0) / coordinateInSrcImage.at<double>(2, 0));
+                int uSrcImage = std::round(coordinateInSrcImage.at<double>(0, 0) / coordinateInSrcImage.at<double>(2, 0));
+
+                if (vSrcImage >= 0 && vSrcImage < src.rows && uSrcImage >= 0 && uSrcImage < src.cols)
+                {
+                    dst.at<cv::Vec3b>(v, u) = src.at<cv::Vec3b>(vSrcImage, uSrcImage);
+                }
+            }
+        }
+#endif
     }
 }
