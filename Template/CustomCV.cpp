@@ -962,7 +962,7 @@ namespace custom_cv
         }
     }
 
-    void partialImageReprojection(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Point2f> & corners_src)
+    void imageElementReprojection(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Point2f> & corners_src)
     {
         std::vector<cv::Point2f> corners_out = {cv::Point2f(0, 0), cv::Point2f(dst.cols - 1, 0), cv::Point2f(dst.cols - 1, dst.rows - 1), cv::Point2f(0, dst.rows - 1)};
 
