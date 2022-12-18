@@ -428,39 +428,41 @@ namespace custom_cv
     void compute3Dpoints(const cv::Mat & disparity, std::vector<cv::Point3f> & points, std::vector<cv::Point2i> & rc);
 
     /**
-     * @brief TODO
+     * @brief Find the approximate best plane which contains the desired point. It uses RANSAC algorithm to establish which is the best
+     *        plane and a value of 0.2 as maximum distance from the plane for an inlier point.
      * 
-     * @param points 
-     * @param rc 
-     * @param inliers_best_points 
-     * @param inliers_best_rc 
+     * @param points The 3D points for which compute the best plane.
+     * @param rc The points containing the idexes (row, column) in the image of the corresponding 3D points of the `points` vector.
+     * @param inliers_best_points The "returned" vector in which store all the inlier 3D points corresponing to the best plane founded.
+     * @param inliers_best_rc The "returned" vector in which store all the indexes (row, column) in the image for the inlier 3D points 
+     *                        corresponing to the best plane founded.
      * 
     **/
     void computePlane(const std::vector<cv::Point3f> & points, const std::vector<cv::Point2i> & rc, std::vector<cv::Point3f> & inliers_best_points, std::vector<cv::Point2i> & inliers_best_rc);
 
     /**
-     * @brief Create a Image from Inlier Points Vector.
+     * @brief Creates an image using the indexes contained in the vector of the indexes (row, column) in the image for the inlier 3D points 
+     *        corresponing to the best plane founded.
      * 
-     * TODO
+     * @param leftSrc The left source image of CV_8UC1 type.
+     * @param dst The "returned" image of CV_8UC1 type.
+     * @param inliersBestRowColumn The vector of the indexes (row, column) in the image for the inlier 3D points corresponing to the best plane founded.
      * 
-     * @param leftSrc 
-     * @param dst 
-     * @param inliersBestRowColumn 
+     * @see [computePlane]
      * 
     **/
     void createImageFromInliers(const cv::Mat & leftSrc, cv::Mat & dst, const std::vector<cv::Point2i> & inliersBestRowColumn);
 
     /**
-     * @brief TODO
+     * @brief Reprojects the element of the source image, contained in the points specified as input vector, in a new image with a bird-side view.
      * 
-     * TODO: change the function name?
-     * 
-     * @param src 
-     * @param dst 
-     * @param corners_src 
+     * @param src The source image of CV_8UC3 type.
+     * @param dst The "returned" image of CV_8UC3 type.
+     * @param corners_src The vector containing the four corners of the element contained in the source image. They MUST have the pattern of:
+     *                    top-left corner, top-right corner, bottom-right corner, bottom-left corner.
      * 
     **/
-    void partialImageReprojection(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Point2f> & corners_src);
+    void imageElementReprojection(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Point2f> & corners_src);
 }
 
 #endif
