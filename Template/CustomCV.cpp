@@ -566,28 +566,13 @@ namespace custom_cv
             exit(-1);
         }
         
-        cv::Mat verticalSobel = cv::Mat::zeros(cv::Size(3, 3), CV_32FC1);
         cv::Mat horizontalSobel;
         cv::Mat convX;
         cv::Mat convY;
 
-        for (int v = 0; v < verticalSobel.rows; ++v)
-        {
-            for (int u = 0; u < verticalSobel.cols; ++u)
-            {
-                if (u == 0 && (v == 0 || v == 2))
-                    verticalSobel.at<float>(v, u) = 1;
-                
-                if (u == 0 && v == 1)
-                    verticalSobel.at<float>(v, u) = 2;
-                
-                if (u == 2 && (v == 0 || v == 2))
-                    verticalSobel.at<float>(v, u) = -1;
-                
-                if (u == 2 && v == 1)
-                    verticalSobel.at<float>(v, u) = -2;
-            }
-        }
+        cv::Mat verticalSobel = (cv::Mat_<float>(3, 3) << -1, 0, 1,
+                                                          -2, 0, 2,
+                                                          -1, 0, 1);
 
         cv::transpose(verticalSobel, horizontalSobel);
 
