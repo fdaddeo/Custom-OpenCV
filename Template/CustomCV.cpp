@@ -15,6 +15,12 @@ namespace custom_cv
 
     void addZeroPadding(const cv::Mat & src, cv::Mat & padded, const int padW, const int padH)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         padded = cv::Mat::zeros(src.rows + 2 * padH, src.cols + 2 * padW, CV_8UC1);
 
         for (int v = padH; v < (padded.rows - padH); ++v)
@@ -28,6 +34,12 @@ namespace custom_cv
 
     void addZeroPadding(const cv::Mat & src, const cv::Mat & kernel , cv::Mat & padded, cv::Point anchor, bool zeroPad = true)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         int padW_left = anchor.y;
         int padW_right = kernel.cols - 1 - anchor.y;
         int padH_top = anchor.x;
@@ -56,7 +68,13 @@ namespace custom_cv
     {
         if (!checkOddKernel(krn))
         {
-            std::cout << "ERRORE: il kernel deve essere dispari e quadrato.\n";
+            perror("Kernel must be odd and have squared dimension");
+            exit(-1);
+        }
+
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
             exit(-1);
         }
 
@@ -94,6 +112,12 @@ namespace custom_cv
 
     void calculateHistogram(const cv::Mat & src, int (& histogram)[256])
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         for (int v = 0; v < src.rows; ++v)
         {
             for (int u = 0; u < src.cols; ++u)
@@ -151,6 +175,12 @@ namespace custom_cv
 
     void erosionBinary(const cv::Mat & src, cv::Mat & dst, const cv::Mat & structuralElement, cv::Point anchor)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat paddedSrc;
 
         addZeroPadding(src, structuralElement, paddedSrc, anchor);
@@ -191,6 +221,12 @@ namespace custom_cv
 
     void dilationBinary(const cv::Mat & src, cv::Mat & dst, const cv::Mat & structuralElement, cv::Point anchor)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat paddedSrc;
         
         addZeroPadding(src, structuralElement, paddedSrc, anchor);
@@ -231,6 +267,12 @@ namespace custom_cv
 
     void openingBinary(cv::Mat & src, cv::Mat & dst, cv::Mat & structuralElement, cv::Point anchor)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat eroded;
 
         erosionBinary(src, eroded, structuralElement, anchor);
@@ -239,6 +281,12 @@ namespace custom_cv
 
     void closingBinary(cv::Mat & src, cv::Mat & dst, cv::Mat & structuralElement, cv::Point anchor)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat dilated;
 
         dilationBinary(src, dilated, structuralElement, anchor);
@@ -247,6 +295,12 @@ namespace custom_cv
 
     void erosionGreyscale(const cv::Mat & src, cv::Mat & dst, const cv::Mat & structuralElement, cv::Point anchor)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat paddedSrc;
 
         addZeroPadding(src, structuralElement, paddedSrc, anchor, false);
@@ -282,6 +336,12 @@ namespace custom_cv
 
     void dilationGreyscale(cv::Mat & src, cv::Mat & dst, cv::Mat & structuralElement, cv::Point anchor)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat paddedSrc;
 
         addZeroPadding(src, structuralElement, paddedSrc, anchor);
@@ -317,6 +377,12 @@ namespace custom_cv
 
     void openingGreyscale(cv::Mat & src, cv::Mat & dst, cv::Mat & structuralElement, cv::Point anchor)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat eroded;
 
         erosionGreyscale(src, eroded, structuralElement, anchor);
@@ -325,6 +391,12 @@ namespace custom_cv
 
     void closingGreyscale(cv::Mat & src, cv::Mat & dst, cv::Mat & structuralElement, cv::Point anchor)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat dilated;
 
         dilationGreyscale(src, dilated, structuralElement, anchor);
@@ -349,6 +421,12 @@ namespace custom_cv
 
     void gaussianBlur(const cv::Mat & src, float sigma, int r, cv::Mat & dst, int stride)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat gaussian_kernel_vertical;
         cv::Mat gaussian_kernel_horizontal;
         cv::Mat out_tmp;
@@ -378,6 +456,12 @@ namespace custom_cv
 
     cv::Mat createRangeKernel(const cv::Mat & src, const int vImage, const int uImage, const int radius, const int diameter, const float sigma)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat krn = cv::Mat::zeros(diameter, diameter, CV_32FC1);
 
         int imageCenteredPixelValue = src.at<uchar>(vImage, uImage);
@@ -397,6 +481,12 @@ namespace custom_cv
 
     void bilateralFiltering(const cv::Mat & src, cv::Mat & dst, int diameter, float sigmaD, float sigmaR)
     {        
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+        
         cv::Mat verticalGaussianKernel;
         cv::Mat horizonalGaussianKernel;
         cv::Mat domainKernel;
@@ -437,6 +527,12 @@ namespace custom_cv
 
     void sharpeningFiltering(const cv::Mat & src, cv::Mat & dst, const float alpha)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         cv::Mat LoG_conv_I;
 
         float kernelData[9] = {0, 1, 0, 1, -4, 1, 0, 1, 0};
@@ -464,6 +560,12 @@ namespace custom_cv
 
     void sobel3x3(const cv::Mat & src, cv::Mat & magnitude, cv::Mat & orientation)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+        
         cv::Mat verticalSobel = cv::Mat::zeros(cv::Size(3, 3), CV_32FC1);
         cv::Mat horizontalSobel;
         cv::Mat convX;
@@ -515,7 +617,7 @@ namespace custom_cv
     {
         if (r > src.rows || c > src.cols)
         {
-            std::cout << "ERRORE: valore di (r,c) non corretto\n";
+            perror("Wrong (r,c) value");
             exit(-1);
         }
 
@@ -540,7 +642,7 @@ namespace custom_cv
         }
         else 
         {
-            std::cout << "ERRORE: image type non implementato\n";
+            perror("Image type not implemented");
             exit(-1);
         }
         
@@ -549,6 +651,18 @@ namespace custom_cv
 
     void findPeaks(const cv::Mat & magnitude, const cv::Mat & orientation, cv::Mat & dst)
     {        
+        if (magnitude.type() != CV_32FC1)
+        {
+            perror("Magnitude must be of CV_32FC1 type");
+            exit(-1);
+        }
+
+        if (orientation.type() != CV_32FC1)
+        {
+            perror("Orientation must be of CV_32FC1 type");
+            exit(-1);
+        }
+
         dst = cv::Mat::zeros(magnitude.rows, magnitude.cols, CV_32FC1);
 
         for (int v = 1; v < dst.rows - 1; ++v)
@@ -610,6 +724,12 @@ namespace custom_cv
 #else
     void doubleTh(const cv::Mat & magnitude, cv::Mat & dst, const float tLow, const float tHigh)
     {
+        if (magnitude.type() != CV_32FC1)
+        {
+            perror("Magnitude must be of CV_32FC1 type");
+            exit(-1);
+        }
+
         std::vector<cv::Point2i> grownPoints;
         std::vector<cv::Point2i> markedPoints;
         
@@ -674,6 +794,12 @@ namespace custom_cv
 
     bool checkNeighborhoodEdge(const cv::Mat & magnitude, const int vStart, const int uStart, const float tLow, const float tHigh)
     {
+        if (magnitude.type() != CV_32FC1)
+        {
+            perror("Magnitude must be of CV_32FC1 type");
+            exit(-1);
+        }
+        
         if (vStart < 1 || uStart < 1 || vStart >= (magnitude.rows - 1) || uStart >= (magnitude.cols - 1))
         {
             return false;
@@ -707,6 +833,12 @@ namespace custom_cv
 
     void houghTransform(const cv::Mat & src, std::vector<cv::Vec2f> & lines, const int threshold)
     {
+        if (src.type() != CV_8UC1)
+        {
+            perror("Image must be of CV_8UC1 type");
+            exit(-1);
+        }
+        
         const int diagonal = int(std::pow(std::pow(src.rows, 2) + std::pow(src.cols, 2), 0.5));
         const int degrees = 180;
 
@@ -777,6 +909,18 @@ namespace custom_cv
 
     void mySAD_Disparity7x7(const cv::Mat & leftImage, const cv::Mat & rightImage, cv::Mat & dst)
     {
+        if (leftImage.type() != CV_8UC1)
+        {
+            perror("Left image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
+        if (rightImage.type() != CV_8UC1)
+        {
+            perror("Right image must be of CV_8UC1 type");
+            exit(-1);
+        }
+        
         cv::Mat paddedLeftImage;
         cv::Mat paddedRightImage;
         
@@ -821,6 +965,12 @@ namespace custom_cv
 
     void VDisparity(const cv::Mat & disparity, cv::Mat & dst)
     {
+        if (disparity.type() != CV_32FC1)
+        {
+            perror("Disparity matrix must be of CV_32FC1 type");
+            exit(-1);
+        }
+
         dst = cv::Mat::zeros(disparity.rows, 128, CV_16UC1);
 
         for (int v = 0; v < dst.rows; ++v)
@@ -863,6 +1013,12 @@ namespace custom_cv
 
     void compute3Dpoints(const cv::Mat & disparity, std::vector<cv::Point3f> & points, std::vector<cv::Point2i> & rc)
     {
+        if (disparity.type() != CV_32FC1)
+        {
+            perror("Disparity matrix must be of CV_32FC1 type");
+            exit(-1);
+        }
+
         // Calibration parameters
         constexpr float focal = 657.475;
         constexpr float baseline = 0.3;
@@ -954,6 +1110,12 @@ namespace custom_cv
 
     void createImageFromInliers(const cv::Mat & leftSrc, cv::Mat & dst, const std::vector<cv::Point2i> & inliersBestRowColumn)
     {
+        if (leftSrc.type() != CV_8UC1)
+        {
+            perror("Left source image must be of CV_8UC1 type");
+            exit(-1);
+        }
+
         dst = cv::Mat::zeros(leftSrc.rows, leftSrc.cols, CV_8UC1);
 
         for (cv::Point2i coordinate : inliersBestRowColumn)
@@ -964,6 +1126,12 @@ namespace custom_cv
 
     void imageElementReprojection(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Point2f> & corners_src)
     {
+        if (src.type() != CV_8UC3)
+        {
+            perror("Image must be of CV_8UC3 type");
+            exit(-1);
+        }
+
         std::vector<cv::Point2f> corners_out = {cv::Point2f(0, 0), cv::Point2f(dst.cols - 1, 0), cv::Point2f(dst.cols - 1, dst.rows - 1), cv::Point2f(0, dst.rows - 1)};
 
         /* nota la posizione dei 4 angoli della copertina in input, questi sono i corrispondenti
