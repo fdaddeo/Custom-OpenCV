@@ -838,11 +838,13 @@ namespace custom_cv
             perror("Image must be of CV_8UC1 type");
             exit(-1);
         }
+
+        cv::Mat accumulationMatrixImage;
         
         const int diagonal = int(std::pow(std::pow(src.rows, 2) + std::pow(src.cols, 2), 0.5));
         const int degrees = 180;
 
-        int accumulationMatrix[diagonal][degrees] = {0};
+        cv::Mat accumulationMatrix = cv::Mat::zeros(2 * diagonal, degrees, CV_32SC1);
         
         for (int v = 0; v < src.rows; ++v)
         {
@@ -858,24 +860,29 @@ namespace custom_cv
                         
                         int rho = std::round(u * cos + v * sin);
 
-                        accumulationMatrix[rho][t] += 1;
+                        accumulationMatrix.at<int>(rho + diagonal, t) += 1;
                     }
                 }
             }
         }
 
-        for (int v = 0; v < diagonal; ++v)
+        for (int rhoIndex = 0; rhoIndex < accumulationMatrix.rows; ++rhoIndex)
         {
-            for (int u = 0; u < degrees; ++u)
+            for (int thetaIndex = 0; thetaIndex < accumulationMatrix.cols; ++thetaIndex)
             {
-                if (accumulationMatrix[v][u] > threshold)
+                if (accumulationMatrix.at<int>(rhoIndex, thetaIndex) > threshold)
                 {
-                    float theta = u * M_PI / 180;
+                    float rho = rhoIndex - diagonal;
+                    float theta = thetaIndex * M_PI / 180;
 
-                    lines.push_back(cv::Vec2f(v, theta));
+                    lines.push_back(cv::Vec2f(rho, theta));
                 }
             }
         }
+
+        cv::convertScaleAbs(accumulationMatrix, accumulationMatrixImage);
+        cv::namedWindow("Accumulation matrix", cv::WINDOW_NORMAL);
+        cv::imshow("Accumulation matrix", accumulationMatrixImage);
     }
 
     void drawLinesOnImage(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Vec2f> & lines)
