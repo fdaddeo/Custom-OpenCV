@@ -587,7 +587,7 @@ namespace custom_cv
         cv::pow(convX.mul(convX) + convY.mul(convY), 0.5, magnitude);
 
         // Compute Orientation
-        orientation = cv::Mat(magnitude.rows, magnitude.cols, CV_32FC1);
+        orientation = cv::Mat(magnitude.size(), CV_32FC1);
 
         for (int v = 0; v < orientation.rows; ++v)
         {
@@ -596,42 +596,6 @@ namespace custom_cv
                 orientation.at<float>(v, u) = atan2f(convY.at<float>(v, u), convX.at<float>(v, u));
             }
         }
-    }
-
-    float bilinear(const cv::Mat & src, const float r, const float c)
-    {
-        if (r > src.rows || c > src.cols)
-        {
-            perror("Wrong (r,c) value");
-            exit(-1);
-        }
-
-        int r_floor = std::floor(r);
-        int c_floor = std::floor(c);
-        int r_ceil = std::ceil(r);
-        int c_ceil = std::ceil(c);
-
-        float t = r - r_floor;
-        float s = c - c_floor;
-
-        // Interpolation value
-        float output;
-
-        if (src.type() == CV_8UC1)
-        {
-            output = (float)((int)(src.at<uchar>(r_floor, c_floor)) * (1 - s) * (1 - t) + (int)(src.at<uchar>(r_floor, c_ceil)) * s * (1 - t) + (int)(src.at<uchar>(r_ceil, c_floor)) * (1 - s) * t + (int)(src.at<uchar>(r_ceil, c_ceil)) * s * t);
-        }
-        else if (src.type() == CV_32FC1)
-        {
-            output = (float)(src.at<float>(r_floor, c_floor) * (1 - s) * (1 - t) + src.at<float>(r_floor, c_ceil) * s * (1 - t) + src.at<float>(r_ceil, c_floor) * (1 - s) * t + src.at<float>(r_ceil, c_ceil) * s * t);
-        }
-        else 
-        {
-            perror("Image type not implemented");
-            exit(-1);
-        }
-        
-        return output;
     }
 
     void findPeaks(const cv::Mat & magnitude, const cv::Mat & orientation, cv::Mat & dst)
@@ -662,8 +626,8 @@ namespace custom_cv
                 float e2x = u - 1 * std::cos(theta);            
                 float e2y = v - 1 * std::sin(theta);
 
-                float e1 = bilinear(magnitude, e1y, e1x);
-                float e2 = bilinear(magnitude, e2y, e2x);
+                float e1 = bilinear<float>(magnitude, e1y, e1x);
+                float e2 = bilinear<float>(magnitude, e2y, e2x);
 
                 if (magnVal > e1 && magnVal > e2)
                 {

@@ -61,6 +61,44 @@ namespace custom_cv
     }
 
     /**
+     * @brief Performs the bilinear interpolation of a point using its four neighbour pixels.
+     * 
+     * @tparam T The datatype contained in the two matrixes.
+     * 
+     * @param src The source image of CV_8UC1 or CV_32FC1 type.
+     * @param r The row value, so the y value.
+     * @param c The column value, so the x value.
+     * 
+     * @return The interpolated value of the pixel.
+     * 
+    **/
+    template <typename T>
+    float bilinear(const cv::Mat & src, const float r, const float c)
+    {
+        if (r > src.rows || c > src.cols)
+        {
+            perror("Wrong (r,c) value");
+            exit(-1);
+        }
+
+        int r_floor = std::floor(r);
+        int c_floor = std::floor(c);
+        int r_ceil = std::ceil(r);
+        int c_ceil = std::ceil(c);
+
+        float t = r - r_floor;
+        float s = c - c_floor;
+
+        // Interpolation value
+        float output = src.at<T>(r_floor, c_floor) * (1 - s) * (1 - t) + 
+                       src.at<T>(r_ceil, c_floor) * (1 - s) * t + 
+                       src.at<T>(r_floor, c_ceil) * s * (1 - t) + 
+                       src.at<T>(r_ceil, c_ceil) * s * t;
+        
+        return output;
+    }
+
+    /**
      * @brief Check if the kernel is an odd kernel.
      * 
      * @param krn Kernel to be checked.
@@ -299,18 +337,6 @@ namespace custom_cv
      * 
     **/
     void sobel3x3(const cv::Mat & src, cv::Mat & magnitude, cv::Mat & orientation);
-
-    /**
-     * @brief Performs the bilinear interpolation of a point using its four neighbour pixels.
-     * 
-     * @param src The source image of CV_8UC1 or CV_32FC1 type.
-     * @param r The row value, so the y value.
-     * @param c The column value, so the x value.
-     * 
-     * @return The interpolated value of the pixel.
-     * 
-    **/
-    float bilinear(const cv::Mat & src, const float r, const float c);
 
     /**
      * @brief Performs the operation of Non Maxima Suppression.
