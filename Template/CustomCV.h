@@ -420,7 +420,7 @@ namespace custom_cv
      * @brief Calculates the corresponding 3D points from a disparity matrix. Internally it has stored the intrinsec calibration
      *        parameters of the camera.
      * 
-     * @param disparity The disparity source matrix.
+     * @param disparity The disparity source matrix of CV_32FC1 type.
      * @param points The "returned" vector containing the 3D point computed.
      * @param rc The "returned" vector containing the indexes for (row, column) of the corresponding 3D points.
      * 
