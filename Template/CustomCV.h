@@ -81,19 +81,14 @@ namespace custom_cv
             exit(-1);
         }
 
-        int r_floor = std::floor(r);
-        int c_floor = std::floor(c);
-        int r_ceil = std::ceil(r);
-        int c_ceil = std::ceil(c);
-
-        float t = r - r_floor;
-        float s = c - c_floor;
+        float t = r - int(r);
+        float s = c - int(c);
 
         // Interpolation value
-        float output = src.at<T>(r_floor, c_floor) * (1 - s) * (1 - t) + 
-                       src.at<T>(r_ceil, c_floor) * (1 - s) * t + 
-                       src.at<T>(r_floor, c_ceil) * s * (1 - t) + 
-                       src.at<T>(r_ceil, c_ceil) * s * t;
+        int output = src.at<T>(r, c) * (1 - t) * (1 - s) +
+                     src.at<T>(r + 1, c) * t * (1 - s) +
+                     src.at<T>(r, c + 1) * (1 - t) * s +
+                     src.at<T>(r + 1, c + 1) * t * s;
         
         return output;
     }

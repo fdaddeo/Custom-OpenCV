@@ -434,9 +434,9 @@ namespace custom_cv
         createGaussianKrnlVert(sigma, r, gaussian_kernel_vertical);
         cv::transpose(gaussian_kernel_vertical, gaussian_kernel_horizontal);
         
-        myfilter2D(src, gaussian_kernel_vertical, out_tmp, stride);
+        myfilter2D(src, gaussian_kernel_horizontal, out_tmp, stride);
         out_tmp.convertTo(out_tmp, CV_8UC1);
-        myfilter2D(out_tmp, gaussian_kernel_horizontal, dst, stride);
+        myfilter2D(out_tmp, gaussian_kernel_vertical, dst, stride);
     }
 
     void createDomainKernel(cv::Mat & krn, const int radius, const int sigma)
@@ -695,7 +695,7 @@ namespace custom_cv
                     dst.at<uchar>(v, u) = 255;
                     grownPoints.push_back(cv::Point2i(u, v));
                 }
-                else if (magnVal >= tLow && magnVal < tHigh)
+                else if (magnVal > tLow && magnVal < tHigh)
                 {
                     // In order to mark them
                     dst.at<uchar>(v, u) = 100;
@@ -713,16 +713,10 @@ namespace custom_cv
             {
                 for (int c = -1; c <= 1; ++c)
                 {
-                    if ((r == 0 && c == 0))
-                        continue;
-
                     int v = point.y + r;
                     int u = point.x + c;
 
-                    if (v < 0 || u < 0 || v >= dst.rows || u >= dst.cols)
-                        continue;
-
-                    if (dst.at<uchar>(v, u) == 100)
+                    if (v >= 0 && u >= 0 && v < dst.rows && u < dst.cols && dst.at<uchar>(v, u) == 100)
                     {
                         dst.at<uchar>(v, u) = 255;
                         grownPoints.push_back(cv::Point2i(u, v));
