@@ -17,7 +17,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "AddZeroPadding(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -36,7 +36,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "AddZeroPadding(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -68,13 +68,13 @@ namespace custom_cv
     {
         if (!checkOddKernel(krn))
         {
-            perror("Kernel must be odd and have squared dimension");
+            std::cerr << "MyFilter2D(): kernel must be odd and have squared dimension" << std::endl;
             exit(-1);
         }
 
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "MyFilter2D(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -114,7 +114,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "CalculateHistogram(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -177,7 +177,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "ErosionBinary(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -223,7 +223,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "DilatioBinary(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -269,7 +269,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "OpeningBinary(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -283,7 +283,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "ClosingBinary(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -297,7 +297,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "ErosionGreyscale(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -338,7 +338,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "DilationGreyscale(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -379,7 +379,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "OpeningGreyscale(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -393,7 +393,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "ClosingGreyscale(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -423,7 +423,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "GaussianBlur(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -458,7 +458,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "CreateRangeKernel(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -483,7 +483,7 @@ namespace custom_cv
     {        
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "BilateralFiltering(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
         
@@ -529,7 +529,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "SharpeningFiltering(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -562,7 +562,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "Sobel3x3(): image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
         
@@ -602,13 +602,13 @@ namespace custom_cv
     {        
         if (magnitude.type() != CV_32FC1)
         {
-            perror("Magnitude must be of CV_32FC1 type");
+            std::cerr << "FindPeaks(): magnitude must be of CV_32FC1 type" << std::endl;
             exit(-1);
         }
 
         if (orientation.type() != CV_32FC1)
         {
-            perror("Orientation must be of CV_32FC1 type");
+            std::cerr << "FindPeaks(): orientation must be of CV_32FC1 type" << std::endl;
             exit(-1);
         }
 
@@ -675,7 +675,7 @@ namespace custom_cv
     {
         if (magnitude.type() != CV_32FC1)
         {
-            perror("Magnitude must be of CV_32FC1 type");
+            std::cerr << "Doubleth(): magnitude must be of CV_32FC1 type" << std::endl;
             exit(-1);
         }
 
@@ -739,7 +739,7 @@ namespace custom_cv
     {
         if (magnitude.type() != CV_32FC1)
         {
-            perror("Magnitude must be of CV_32FC1 type");
+            std::cerr << "CheckNeighborhoodEdge(): magnitude must be of CV_32FC1 type" << std::endl;
             exit(-1);
         }
         
@@ -778,7 +778,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC1)
         {
-            perror("Image must be of CV_8UC1 type");
+            std::cerr << "HoughTransform(): image must be of CV8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -861,13 +861,13 @@ namespace custom_cv
     {
         if (leftImage.type() != CV_8UC1)
         {
-            perror("Left image must be of CV_8UC1 type");
+            std::cerr << "MySAD_disparity7x7(): left image must be of CV8UC1 type" << std::endl;
             exit(-1);
         }
 
         if (rightImage.type() != CV_8UC1)
         {
-            perror("Right image must be of CV_8UC1 type");
+            std::cerr << "MySAD_disparity7x7(): right image must be of CV8UC1 type" << std::endl;
             exit(-1);
         }
         
@@ -917,7 +917,7 @@ namespace custom_cv
     {
         if (disparity.type() != CV_32FC1)
         {
-            perror("Disparity matrix must be of CV_32FC1 type");
+            std::cerr << "VDisparity(): disparity matrix must be of CV_32FC1 type" << std::endl;
             exit(-1);
         }
 
@@ -965,7 +965,7 @@ namespace custom_cv
     {
         if (disparity.type() != CV_32FC1)
         {
-            perror("Disparity matrix must be of CV_32FC1 type");
+            std::cerr << "VDisparity(): disparity matrix must be of CV_32FC1 type" << std::endl;
             exit(-1);
         }
 
@@ -1062,7 +1062,7 @@ namespace custom_cv
     {
         if (leftSrc.type() != CV_8UC1)
         {
-            perror("Left source image must be of CV_8UC1 type");
+            std::cerr << "CreateImageFromInliers(): left image must be of CV_8UC1 type" << std::endl;
             exit(-1);
         }
 
@@ -1078,7 +1078,7 @@ namespace custom_cv
     {
         if (src.type() != CV_8UC3)
         {
-            perror("Image must be of CV_8UC3 type");
+            std::cerr << "ImageElementReprojection(): left image must be of CV_8UC3 type" << std::endl;
             exit(-1);
         }
 

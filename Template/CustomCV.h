@@ -34,13 +34,13 @@ namespace custom_cv
     {
         if (firstSrc.type() != secondSrc.type())
         {
-            perror("Error on equalImages function");
+            std::cerr << "EqualImages(): images must be of the same type" << std::endl;
             exit(-1);
         }
 
         if (firstSrc.rows != secondSrc.rows || firstSrc.cols != secondSrc.cols)
         {
-            std::cout << "Dimension reason: ";
+            std::cout << "Dimension reason!" << std::endl;
             return false;
         }
             
@@ -51,7 +51,7 @@ namespace custom_cv
             {
                 if (firstSrc.at<T>(v, u) != secondSrc.at<T>(v, u))
                 {
-                    std::cout << "Pixel value reason: ";
+                    std::cout << "Pixel value reason:" << std::endl;
                     return false;
                 }
             }
