@@ -891,7 +891,7 @@ namespace custom_cv
 
         for (size_t i = 0; i < lines.size(); ++i)
 		{
-			cv::Point pointFirst;
+            cv::Point pointFirst;
 			cv::Point pointLast;
 
 			cv::Vec2f point = lines[i];
@@ -911,7 +911,7 @@ namespace custom_cv
 			pointLast.y = cvRound(y0 - 1000 * (a));
 
 			cv::line(dst, pointFirst, pointLast, cv::Scalar(255, 0, 0), 1, cv::LINE_AA);
-		}
+        }
     }
 
     void mySAD_Disparity7x7(const cv::Mat & leftImage, const cv::Mat & rightImage, cv::Mat & dst)
