@@ -297,9 +297,7 @@ namespace custom_cv
     cv::Mat createRangeKernel(const cv::Mat & src, const int vImage, const int uImage, const int radius, const int diameter, const float sigma);
 
     /**
-     * @brief TO FIX!
-     * 
-     *        Performs a bilateral filtering performing a convolution with a kernel obtained as composition of 
+     * @brief Performs a bilateral filtering performing a convolution with a kernel obtained as composition of 
      *        the domain kernel and the range kernel.
      * 
      * @param src The source image of CV_8UC1 type.
