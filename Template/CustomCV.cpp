@@ -783,6 +783,7 @@ namespace custom_cv
         }
 
         cv::Mat accumulationMatrixImage;
+        cv::Mat accumulationMatrixNMS;
         
         const int diagonal = int(std::pow(std::pow(src.rows, 2) + std::pow(src.cols, 2), 0.5));
         const int degrees = 180;
@@ -801,7 +802,7 @@ namespace custom_cv
                         float cos = std::cos(theta);
                         float sin = std::sin(theta);
                         
-                        int rho = std::round(u * cos + v * sin);
+                        int rho = u * cos + v * sin;
 
                         accumulationMatrix.at<int>(rho + diagonal, t) += 1;
                     }
@@ -809,11 +810,39 @@ namespace custom_cv
             }
         }
 
-        for (int rhoIndex = 0; rhoIndex < accumulationMatrix.rows; ++rhoIndex)
+        cv::convertScaleAbs(accumulationMatrix, accumulationMatrixImage);
+        cv::namedWindow("Accumulation matrix", cv::WINDOW_NORMAL);
+        cv::imshow("Accumulation matrix", accumulationMatrixImage);
+
+        accumulationMatrix.copyTo(accumulationMatrixNMS);
+
+        // Perform an operation of non-maxima suppression by using a 3x3 window
+        for (int v = 1; v < accumulationMatrixNMS.rows - 1; ++v)
         {
-            for (int thetaIndex = 0; thetaIndex < accumulationMatrix.cols; ++thetaIndex)
+            for (int u = 1; u < accumulationMatrixNMS.cols - 1; ++u)
             {
-                if (accumulationMatrix.at<int>(rhoIndex, thetaIndex) > threshold)
+                int accValue = accumulationMatrix.at<int>(v, u);
+
+                for (int k = -1; k <= 1; ++k)
+                {
+                    for (int l = -1; l <= 1; ++l)
+                    {
+                        if (accValue < accumulationMatrix.at<int>(v + k, v + l))
+                        {
+                            accValue = 0;
+                        } 
+                    }
+                }
+
+                accumulationMatrixNMS.at<int>(v, u) = accValue;
+            }
+        }
+
+        for (int rhoIndex = 0; rhoIndex < accumulationMatrixNMS.rows; ++rhoIndex)
+        {
+            for (int thetaIndex = 0; thetaIndex < accumulationMatrixNMS.cols; ++thetaIndex)
+            {
+                if (accumulationMatrixNMS.at<int>(rhoIndex, thetaIndex) > threshold)
                 {
                     float rho = rhoIndex - diagonal;
                     float theta = thetaIndex * M_PI / 180;
@@ -821,11 +850,7 @@ namespace custom_cv
                     lines.push_back(cv::Vec2f(rho, theta));
                 }
             }
-        }
-
-        cv::convertScaleAbs(accumulationMatrix, accumulationMatrixImage);
-        cv::namedWindow("Accumulation matrix", cv::WINDOW_NORMAL);
-        cv::imshow("Accumulation matrix", accumulationMatrixImage);
+        }  
     }
 
     void drawLinesOnImage(const cv::Mat & src, cv::Mat & dst, const std::vector<cv::Vec2f> & lines)
