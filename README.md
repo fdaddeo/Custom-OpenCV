@@ -6,12 +6,26 @@ Basically, in this code are been re-implemented some of the very basic functions
 The main.cpp file is a simple example that explains how tu use the "library".
 
 ## Requirements
-- It's required an installation of OpenCV with extra modules and the non free algorithm. So, first dowload both opencv and contrib from GIT, then use this command to build correctly:
+- It's required an installation of OpenCV with extra modules and the non free algorithm. So, first dowload both opencv and contrib from GIT, then use this commands to build correctly:
+
 ```
 mkdir opencv_build
-cd opencv_build
+```
 
+```
+cd opencv_build
+```
+
+```
 cmake -DOPENCV_ENABLE_NONFREE:BOOL=ON -DOPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules ../opencv/
+```
+
+```
 make -j4
+```
+
+```
 sudo make install -j4
 ```
+
+- Then you can create your own code, but remember to include CustomCV both in main.cpp and CMakeLists.txt.
